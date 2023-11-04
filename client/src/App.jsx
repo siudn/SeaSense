@@ -4,12 +4,21 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch("/api")
+      .then((res) => res.json())
+      .then((data) => setData(data.message));
+  }, []);
 
   return (
-    <>
-      <p>Hello World</p>
-    </>
+    <div className="App">
+      <header className="App-header">
+        <img src={reactLogo} className="App-logo" alt="logo" />
+        <p>{!data ? "Loading..." : data}</p>
+      </header>
+    </div>
   );
 }
 
