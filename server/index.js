@@ -1,8 +1,11 @@
 const express = require("express");
 const multer = require("multer");
+const cors = require("cors");
 const path = require("path");
 const app = express();
-const port = 3001; // Use the port of your choice
+const port = 5174; // Use the port of your choice
+
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: "./uploads/", // Set your upload directory
