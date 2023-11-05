@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Upload from "./upload";
 import Camera from "./camera";
+import Header from "./header";
 import "./App.css";
 
 function App() {
   return (
     <>
-      <Upload></Upload>
-      <Camera></Camera>
+      <Header></Header>
+      <div id="buttons">
+        <Upload></Upload>
+        <Camera></Camera>
+      </div>
     </>
   );
 }
