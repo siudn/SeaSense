@@ -1,74 +1,53 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 function Camera() {
-  const [stream, setStream] = useState(null);
   const videoRef = useRef(null);
-
-  useEffect(() => {
-    if (stream) {
-      videoRef.current.srcObject = stream;
-    }
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [stream]);
+  const [mediaStream, setMediaStream] = useState(null);
 
   const handleStartCamera = async () => {
     try {
-      const userMediaStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setStream(userMediaStream);
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      videoRef.current.srcObject = stream;
+      setMediaStream(stream);
     } catch (error) {
       console.error("Error accessing camera:", error);
     }
   };
 
   const handleTakePhoto = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    canvas
-      .getContext("2d")
-      .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(blob => {
-        // Here you get the image as a Blob
-        console.log("Captured image blob:", blob);
-        uploadImage(blob);
-      }, 'image/png');
-  };
+    if (mediaStream) {
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      canvas
+        .getContext("2d")
+        .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-  const uploadImage = async (blob) => {
-    const formData = new FormData();
-    formData.append('file', blob, 'photo.png');
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const formData = new FormData();
+          formData.append("file", blob, "photo.png"); // You can specify the filename here
 
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+          fetch("http://localhost:5174/upload", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              console.log("Image uploaded successfully");
+            })
+            .catch((error) => {
+              console.error("Error uploading image:", error);
+            });
+        }
       });
-
-      if (response.ok) {
-        console.log('Image uploaded');
-      } else {
-        console.error('Upload failed');
-      }
-    } catch (error) {
-      console.error('Error uploading the image:', error);
     }
   };
 
   return (
     <div>
-      <button onClick={handleStartCamera}>Use Camera</button>
-      {stream && (
-        <div>
-          <video ref={videoRef} autoPlay playsInline muted />
-          <button onClick={handleTakePhoto}>Take Photo</button>
-        </div>
-      )}
+      <button onClick={handleStartCamera}>Start Camera</button>
+      <video ref={videoRef} autoPlay playsInline muted />
+      <button onClick={handleTakePhoto}>Take Photo</button>
     </div>
   );
 }
