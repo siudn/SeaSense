@@ -40,7 +40,7 @@ function Camera() {
 
   return (
     <div>
-      <button onClick={handleStartCamera}>Start Camera</button>
+      <button onClick={handleStartCamera}>Use Camera</button>
       {stream && (
         <div>
           <video ref={videoRef} autoPlay playsInline muted />
