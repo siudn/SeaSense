@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function Camera() {
   const [stream, setStream] = useState(null);
@@ -33,9 +33,31 @@ function Camera() {
     canvas
       .getContext("2d")
       .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    const dataURL = canvas.toDataURL("image/png");
-    // You can use the dataURL or send it to a server for further processing
-    console.log("Captured image:", dataURL);
+      canvas.toBlob(blob => {
+        // Here you get the image as a Blob
+        console.log("Captured image blob:", blob);
+        uploadImage(blob);
+      }, 'image/png');
+  };
+
+  const uploadImage = async (blob) => {
+    const formData = new FormData();
+    formData.append('file', blob, 'photo.png');
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('Image uploaded');
+      } else {
+        console.error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading the image:', error);
+    }
   };
 
   return (
