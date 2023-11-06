@@ -20,5 +20,5 @@ from uploader import urls as UpUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('app/', include(UpUrls)),
+    path('', include(UpUrls)),
 ]

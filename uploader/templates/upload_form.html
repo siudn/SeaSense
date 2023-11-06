@@ -6,7 +6,7 @@
     <title>Uploader</title>
 </head>
 <body>
-    <form action="/myapp/upload" method="post" enctype="multipart/form-data">
+    <form action="{% url 'uploader' %}" method="post" enctype="multipart/form-data">
         {%csrf_token%}
         <p>
             {{ form.file }}
