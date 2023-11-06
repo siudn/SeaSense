@@ -58,7 +58,7 @@ ROOT_URLCONF = 'seaSense.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./uploader/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
