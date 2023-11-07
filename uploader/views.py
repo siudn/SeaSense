@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .forms import UploadFileForm
 from .models import File
@@ -11,8 +11,8 @@ def uploader(request):
         form = UploadFileForm(request.POST, request.FILES)
         file = request.FILES['file']
         file_uploaded = File.objects.create(file_uploaded=file)
-        file_uploaded.save('./uploads')
-        return HttpResponse("The file uploaded is " + str(file))
+        file_uploaded.save()
+        return render(request, "success.html")
     else:
         form = UploadFileForm()
     return render(request, "upload_form.html", {'form': form})
